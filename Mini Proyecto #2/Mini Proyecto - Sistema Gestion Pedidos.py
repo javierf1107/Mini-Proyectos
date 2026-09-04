@@ -133,5 +133,113 @@ while True:
 
                 pedido = PedidoComida(numero, cliente, comida)
 
+# PEDIDO DE PRODUCTO
+            else:
 
+                while True:
+
+                    producto = input("Ingrese el producto: ")
+
+                    if producto == "":
+                        print("Error: el producto no puede estar vacio.")
+
+                    else:
+                        break
+
+                pedido = PedidoProducto(numero, cliente, producto)
+
+
+            # AGREGAR A LA PILA
+            pila.append(pedido)
+
+            print("\nPedido agregado correctamente!")
+            print("Cantidad de pedidos en la pila:", len(pila))
+
+
+            # PREGUNTAR SI QUIERE SEGUIR LLENANDO
+            while True:
+
+                continuar = input(
+                    "Desea agregar otro pedido? (s/n): "
+                ).lower()
+
+                if continuar == "s" or continuar == "n":
+                    break
+
+                else:
+                    print("Error: escriba solamente s o n.")
+
+
+            if continuar == "n":
+                break
+
+
+    # ==========================================
+    # 2. ATENDER PEDIDO
+    # ==========================================
+    elif opcion == "2":
+
+        # VALIDAR SI LA PILA ESTA VACIA
+        if len(pila) == 0:
+
+            print("\nLa pila esta vacia.")
+            print("No hay pedidos para atender.")
+
+        else:
+
+            # SACAR EL ULTIMO PEDIDO
+            pedido = pila.pop()
+
+            print("\n===== PEDIDO ATENDIDO =====")
+
+            pedido.mostrar_pedido()
+
+            print("\nPedidos restantes:", len(pila))
+
+
+    # ==========================================
+    # 3. MOSTRAR PILA
+    # ==========================================
+    elif opcion == "3":
+
+        # VALIDAR SI ESTA VACIA
+        if len(pila) == 0:
+
+            print("\nLa pila esta vacia.")
+            print("No hay pedidos registrados.")
+
+        else:
+
+            print("\n===== PEDIDOS EN LA PILA =====")
+
+            # MOSTRAR DEL ULTIMO AL PRIMERO
+            for pedido in reversed(pila):
+
+                pedido.mostrar_pedido()
+
+                print("------------------------")
+
+
+    # ==========================================
+    # 4. VERIFICAR PILA
+    # ==========================================
+    elif opcion == "4":
+
+        if len(pila) == 0:
+
+            print("\nLa pila esta VACIA.")
+
+        else:
+
+            print("\nLa pila NO esta vacia.")
+            print("Cantidad de pedidos:", len(pila))
+
+
+    # ==========================================
+    # 5. SALIR
+    # ==========================================
+    elif opcion == "5":
+
+        print("\nPrograma finalizado.")
+        break
         
