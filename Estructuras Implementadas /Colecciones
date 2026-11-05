@@ -1,0 +1,35 @@
+using System;
+using System.Collections.Generic;
+using SmartBusiness.Entidades;
+
+namespace SmartBusiness.Negocio.Estructuras
+{
+    // Organiza productos por categoría usando un diccionario de listas.
+    public class ColeccionesProductos
+    {
+        public Dictionary<string, List<Producto>> AgruparPorCategoria(
+            IEnumerable<Producto> productos)
+        {
+            Dictionary<string, List<Producto>> categorias =
+                new Dictionary<string, List<Producto>>(StringComparer.OrdinalIgnoreCase);
+
+            if (productos == null)
+                return categorias;
+
+            foreach (Producto producto in productos)
+            {
+                if (producto == null || string.IsNullOrWhiteSpace(producto.Categoria))
+                    continue;
+
+                string categoria = producto.Categoria.Trim();
+
+                if (!categorias.ContainsKey(categoria))
+                    categorias[categoria] = new List<Producto>();
+
+                categorias[categoria].Add(producto);
+            }
+
+            return categorias;
+        }
+    }
+}
