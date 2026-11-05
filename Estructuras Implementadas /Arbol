@@ -1,0 +1,103 @@
+using System;
+using System.Collections.Generic;
+using SmartBusiness.Entidades;
+
+namespace SmartBusiness.Negocio.Estructuras
+{
+    // Árbol binario de búsqueda ordenado por nombre del producto.
+    public class ArbolProductos
+    {
+        private class Nodo
+        {
+            public string Clave;
+            public List<Producto> Productos = new List<Producto>();
+            public Nodo Izquierdo;
+            public Nodo Derecho;
+
+            public Nodo(Producto producto)
+            {
+                Clave = producto.Nombre.Trim();
+                Productos.Add(producto);
+            }
+        }
+
+        private Nodo raiz;
+
+        public void Limpiar()
+        {
+            raiz = null;
+        }
+
+        public void Insertar(Producto producto)
+        {
+            if (producto == null || string.IsNullOrWhiteSpace(producto.Nombre))
+                return;
+
+            raiz = InsertarNodo(raiz, producto);
+        }
+
+        private Nodo InsertarNodo(Nodo actual, Producto producto)
+        {
+            if (actual == null)
+                return new Nodo(producto);
+
+            int comparacion = string.Compare(
+                producto.Nombre.Trim(), actual.Clave,
+                StringComparison.OrdinalIgnoreCase);
+
+            if (comparacion < 0)
+                actual.Izquierdo = InsertarNodo(actual.Izquierdo, producto);
+            else if (comparacion > 0)
+                actual.Derecho = InsertarNodo(actual.Derecho, producto);
+            else
+                actual.Productos.Add(producto);
+
+            return actual;
+        }
+
+        public List<Producto> BuscarPorNombre(string nombre)
+        {
+            if (string.IsNullOrWhiteSpace(nombre))
+                return new List<Producto>();
+
+            Nodo encontrado = BuscarNodo(raiz, nombre.Trim());
+            return encontrado == null
+                ? new List<Producto>()
+                : new List<Producto>(encontrado.Productos);
+        }
+
+        private Nodo BuscarNodo(Nodo actual, string nombre)
+        {
+            if (actual == null)
+                return null;
+
+            int comparacion = string.Compare(
+                nombre, actual.Clave, StringComparison.OrdinalIgnoreCase);
+
+            if (comparacion == 0)
+                return actual;
+
+            if (comparacion < 0)
+                return BuscarNodo(actual.Izquierdo, nombre);
+
+            return BuscarNodo(actual.Derecho, nombre);
+        }
+
+        public List<Producto> ObtenerOrdenadosPorNombre()
+        {
+            List<Producto> resultado = new List<Producto>();
+            RecorrerEnOrden(raiz, resultado);
+            return resultado;
+        }
+
+        private void RecorrerEnOrden(Nodo actual, List<Producto> resultado)
+        {
+            if (actual == null)
+                return;
+
+            RecorrerEnOrden(actual.Izquierdo, resultado);
+            resultado.AddRange(actual.Productos);
+            RecorrerEnOrden(actual.Derecho, resultado);
+        }
+    }
+}
