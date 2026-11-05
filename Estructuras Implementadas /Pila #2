@@ -1,0 +1,47 @@
+using System.Collections.Generic;
+
+namespace SmartBusiness.Negocio.Estructuras
+{
+    public class PilaMovimientosStock
+    {
+        private readonly Stack<MovimientoStock> pila =
+            new Stack<MovimientoStock>();
+
+        public int Cantidad
+        {
+            get { return pila.Count; }
+        }
+
+        // Registrar un movimiento.
+        public void Registrar(MovimientoStock movimiento)
+        {
+            if (movimiento != null)
+            {
+                pila.Push(movimiento);
+            }
+        }
+
+        // Consultar el movimiento más reciente.
+        public MovimientoStock VerUltimo()
+        {
+            if (pila.Count == 0)
+            {
+                return null;
+            }
+
+            return pila.Peek();
+        }
+
+        // Obtener todos los movimientos, del más reciente al más antiguo.
+        public List<MovimientoStock> ObtenerHistorial()
+        {
+            return new List<MovimientoStock>(pila);
+        }
+
+        // Vaciar la pila cuando sea necesario.
+        public void Limpiar()
+        {
+            pila.Clear();
+        }
+    }
+}
