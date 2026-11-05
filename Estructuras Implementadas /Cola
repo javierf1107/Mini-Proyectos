@@ -1,0 +1,43 @@
+using System.Collections.Generic;
+using SmartBusiness.Entidades;
+
+namespace SmartBusiness.Negocio.Estructuras
+{
+    // Cola FIFO para organizar compras pendientes en orden de llegada.
+    public class ColaComprasPendientes
+    {
+        private readonly Queue<Compra> compras = new Queue<Compra>();
+
+        public int CantidadPendiente
+        {
+            get { return compras.Count; }
+        }
+
+        public void Agregar(Compra compra)
+        {
+            if (compra != null)
+                compras.Enqueue(compra);
+        }
+
+        public Compra VerSiguiente()
+        {
+            if (compras.Count == 0)
+                return null;
+
+            return compras.Peek();
+        }
+
+        public Compra RetirarSiguiente()
+        {
+            if (compras.Count == 0)
+                return null;
+
+            return compras.Dequeue();
+        }
+
+        public List<Compra> ObtenerPendientes()
+        {
+            return new List<Compra>(compras);
+        }
+    }
+}
