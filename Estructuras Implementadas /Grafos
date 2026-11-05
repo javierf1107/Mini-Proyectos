@@ -1,0 +1,99 @@
+using System;
+using System.Collections.Generic;
+
+namespace SmartBusiness.Negocio.Estructuras
+{
+    // Grafo dirigido de navegación: cada nodo es una pantalla o categoría.
+    // Las conexiones se agregan explícitamente según el flujo real de la interfaz.
+    public class GrafoNavegacion
+    {
+        private readonly Dictionary<string, List<string>> conexiones =
+            new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+
+        public void AgregarPantalla(string nombre)
+        {
+            if (!string.IsNullOrWhiteSpace(nombre) && !conexiones.ContainsKey(nombre.Trim()))
+                conexiones[nombre.Trim()] = new List<string>();
+        }
+
+        public void AgregarConexion(string origen, string destino)
+        {
+            if (string.IsNullOrWhiteSpace(origen) || string.IsNullOrWhiteSpace(destino))
+                return;
+
+            AgregarPantalla(origen);
+            AgregarPantalla(destino);
+
+            if (!conexiones[origen.Trim()].Contains(destino.Trim()))
+                conexiones[origen.Trim()].Add(destino.Trim());
+        }
+
+        // Busca la ruta más corta por cantidad de conexiones usando BFS.
+        public List<string> BuscarRuta(string origen, string destino)
+        {
+            List<string> rutaVacia = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(origen) || string.IsNullOrWhiteSpace(destino))
+                return rutaVacia;
+
+            origen = origen.Trim();
+            destino = destino.Trim();
+
+            if (!conexiones.ContainsKey(origen) || !conexiones.ContainsKey(destino))
+                return rutaVacia;
+
+            Queue<string> cola = new Queue<string>();
+            Dictionary<string, string> anterior =
+                new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            HashSet<string> visitados =
+                new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            cola.Enqueue(origen);
+            visitados.Add(origen);
+
+            while (cola.Count > 0)
+            {
+                string actual = cola.Dequeue();
+
+                if (string.Equals(actual, destino, StringComparison.OrdinalIgnoreCase))
+                    break;
+
+                foreach (string vecino in conexiones[actual])
+                {
+                    if (!visitados.Contains(vecino))
+                    {
+                        visitados.Add(vecino);
+                        anterior[vecino] = actual;
+                        cola.Enqueue(vecino);
+                    }
+                }
+            }
+
+            if (!visitados.Contains(destino))
+                return rutaVacia;
+
+            string paso = destino;
+            while (paso != null)
+            {
+                rutaVacia.Insert(0, paso);
+                string previo;
+                if (!anterior.TryGetValue(paso, out previo))
+                    break;
+                paso = previo;
+            }
+
+            return rutaVacia;
+        }
+
+        public Dictionary<string, List<string>> ObtenerConexiones()
+        {
+            Dictionary<string, List<string>> copia =
+                new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (KeyValuePair<string, List<string>> item in conexiones)
+                copia[item.Key] = new List<string>(item.Value);
+
+            return copia;
+        }
+    }
+}
