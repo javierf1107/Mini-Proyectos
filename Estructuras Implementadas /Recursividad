@@ -1,0 +1,59 @@
+using System.Collections.Generic;
+using SmartBusiness.Entidades;
+
+namespace SmartBusiness.Negocio.Estructuras
+{
+    public class CalculadoraRecursivaInventario
+    {
+        // Suma el valor del inventario: Precio por Cantidad de cada producto.
+        // Se llama a sí misma avanzando por la lista hasta llegar al final.
+        public decimal CalcularValorTotal(List<Producto> productos)
+        {
+            if (productos == null || productos.Count == 0)
+                return 0m;
+
+            return CalcularDesde(productos, 0);
+        }
+
+        private decimal CalcularDesde(List<Producto> productos, int indice)
+        {
+            if (indice >= productos.Count)
+                return 0m;
+
+            Producto producto = productos[indice];
+            decimal valorActual = 0m;
+
+            if (producto != null)
+                valorActual = producto.Precio * producto.Cantidad;
+
+            return valorActual + CalcularDesde(productos, indice + 1);
+        }
+
+        // Cuenta productos de una categoría utilizando recursividad.
+        public int ContarPorCategoria(List<Producto> productos, string categoria)
+        {
+            if (productos == null || string.IsNullOrWhiteSpace(categoria))
+                return 0;
+
+            return ContarDesde(productos, categoria.Trim(), 0);
+        }
+
+        private int ContarDesde(List<Producto> productos, string categoria, int indice)
+        {
+            if (indice >= productos.Count)
+                return 0;
+
+            Producto producto = productos[indice];
+            int coincide = 0;
+
+            if (producto != null &&
+                string.Equals(producto.Categoria, categoria,
+                    System.StringComparison.OrdinalIgnoreCase))
+            {
+                coincide = 1;
+            }
+
+            return coincide + ContarDesde(productos, categoria, indice + 1);
+        }
+    }
+}
