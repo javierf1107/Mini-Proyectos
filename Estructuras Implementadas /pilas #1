@@ -1,0 +1,25 @@
+using System.Collections.Generic;
+using SmartBusiness.Entidades;
+
+namespace SmartBusiness.Negocio.Estructuras
+{
+    public class PilaMovimientosStock
+    {
+        private readonly Stack<MovimientoStock> pila =
+            new Stack<MovimientoStock>();
+
+        public int Cantidad
+        {
+            get { return pila.Count; }
+        }
+
+        // Registrar un movimiento.
+        public void Registrar(MovimientoStock movimiento)
+        {
+            if (movimiento != null)
+            {
+                pila.Push(movimiento);
+            }
+        }
+    }
+}
